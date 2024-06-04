@@ -1,0 +1,5 @@
+{
+  "ProjectOverviewURL": "https://xom-ses-test-u1mmflnl.launchpad.cfapps.us10.hana.ondemand.com/lcapsesmassuploadapp.sesmassuploadappLaunchpad-1.0.0",
+  "DeployedUTCTime": "2024-06-04T17:47:33.954Z",
+  "ApplicationLogURL": "https://logs.cf.us10.hana.ondemand.com/app/dashboards#/view/Overview?_g=(filters:!((query:(match_phrase:(component_name:sesmassuploadapp-srv)))))"
+}

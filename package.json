@@ -1,0 +1,191 @@
+{
+  "name": "sesmassuploadapp",
+  "version": "1.0.0",
+  "description": "Service Entry Sheet Mass Upload",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@cap-js/attachments": "^1.0.1",
+    "@sap-cloud-sdk/http-client": "^3.15.0",
+    "@sap-cloud-sdk/util": "^3.15.0",
+    "@sap/cds": "^7",
+    "@sap/cds-hana": "^2",
+    "@sap/low-code-event-handler": "^1.2.4",
+    "@sap/mdk-tools": "^1.3.1",
+    "@sap/xsenv": ">=3.3.2 <3.3.3",
+    "@sap/xssec": "^3.6.1",
+    "express": "^4",
+    "hdb": "^0.19.8",
+    "passport": "^0.7.0",
+    "soap": "^1.0.0"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1",
+    "@sap/dev-cap-tools": "^1.31.0",
+    "@sap/eslint-plugin-cds": "^3",
+    "@sap/ux-specification": "^1.120.11",
+    "eslint": "^9"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "start-local": "npm run generate-entry-point && npm run cds-watch",
+    "generate-entry-point": "dev-cap-tools gen-entrypoint",
+    "cds-watch": "cds watch --open",
+    "watch-sesmassuploadapp": "cds watch --open sesmassuploadapp/webapp/index.html?sap-ui-xx-viewCache=false"
+  },
+  "cds": {
+    "requires": {
+      "[development]": {
+        "attachments": {
+          "kind": "db"
+        }
+      },
+      "[production]": {
+        "attachments": {
+          "kind": "db"
+        },
+        "db": "hana"
+      },
+      "app-service": {
+        "impl": "@sap/low-code-event-handler"
+      },
+      "auth": {
+        "[development]": {
+          "kind": "dummy"
+        },
+        "[production]": {
+          "kind": "xsuaa"
+        }
+      },
+      "ZAPI_PURCHASEORDER_PROCESS_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/ZAPI_PURCHASEORDER_PROCESS_SRV",
+        "credentials": {
+          "forwardAuthToken": true
+        },
+        "[production]": {
+          "credentials": {
+            "destination": "L5S",
+            "path": "/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV"
+          }
+        }
+      },
+      "ZSERVICEENTRYSHEET_SYNC": {
+        "kind": "soap",
+        "model": "srv/external/zserviceentrysheetrequest_sync_in",
+        "credentials": {
+          "forwardAuthToken": true
+        },
+        "[production]": {
+          "credentials": {
+            "destination": "L5S",
+            "path": "/sap/bc/srt/rfc/sap/zserviceentrysheetrequest_in/100/zserviceentrysheetrequest_in/zserviceentrysheetrequest_in"
+          }
+        }
+      },
+      "ZSERVICEENTRYSHEET_ASYN": {
+        "kind": "soap",
+        "model": "srv/external/zserviceentrysheetrequest_asyn",
+        "credentials": {
+          "forwardAuthToken": true
+        },
+        "[production]": {
+          "credentials": {
+            "destination": "L5S",
+            "path": "/sap/bc/srt/xip/arba/serviceentrysheetrequest/100"
+          }
+        }
+      },
+      "ZMASSSESREQUEST": {
+        "kind": "soap",
+        "model": "srv/external/ZMASSESREQUEST_IN",
+        "credentials": {
+          "forwardAuthToken": true
+        },
+        "[production]": {
+          "credentials": {
+            "destination": "L5S",
+            "path": "/sap/bc/srt/rfc/sap/zmassesrequest_in/100/zmassesrequest_in/zmassesrequest_in"
+          }
+        }
+      },
+      "OP_SERVICEENTRYSHEETREQUEST_IN": {
+        "kind": "soap",
+        "model": "srv/external/OP_SERVICEENTRYSHEETREQUEST_IN",
+        "credentials": {
+          "forwardAuthToken": true
+        },
+        "[production]": {
+          "credentials": {
+            "destination": "L5S",
+            "path": "/sap/bc/srt/scs_ext/sap/serviceentrysheetrequest_in"
+          }
+        }
+      },
+      "QUERYBUSINESSUSERIN": {
+        "kind": "soap",
+        "model": "srv/external/QUERYBUSINESSUSERINN",
+        "credentials": {
+          "forwardAuthToken": true
+        },
+        "[production]": {
+          "credentials": {
+            "destination": "L5S",
+            "path": "/sap/bc/srt/xip/sap/querybusinessuserin/100/zquerybusinessuserin/zquerybusinessuserin"
+          }
+        }
+      },
+      "ZAPI_PURCHASECONTRACT_PROCESS_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/ZAPI_PURCHASECONTRACT_PROCESS_SRV",
+        "credentials": {
+          "forwardAuthToken": true
+        },
+        "[production]": {
+          "credentials": {
+            "destination": "L5S",
+            "path": "/sap/opu/odata/sap/API_PURCHASECONTRACT_PROCESS_SRV"
+          }
+        }
+      },
+      "ARIBA_NETWORK_PURCHASE_ORDERS": {
+        "kind": "rest",
+        "impl": "srv/external/AribaNetworkPurchaseOrders.js",
+        "credentials": {
+          "[production]": {
+            "destination": "sesapp_aribapo_ariba_api"
+          },
+          "[development]": {
+            "url": "https://openapi.ariba.com/api/purchase-orders/v1/prod",
+            "headers": {
+              "APIKey": "bsuIGWttlODl0v2yLLCAEXcxvy4SLI9D",
+              "X-ARIBA-NETWORK-ID": "AN01053225455-T"
+            }
+          }
+        }
+      },
+      "ARIBA_NETWORK_AUTH": {
+        "kind": "rest",
+        "credentials": {
+          "[production]": {
+            "destination": "sesapp_ariba_auth_api"
+          },
+          "[development]": {
+            "url": "https://api.ariba.com",
+            "headers": {
+              "Authorization": "Basic ZmVkNWQyMWEtMjVlNC00YTE5LTg3NDMtZWMwNDE0ZWE1NzQyOjhGUFdKTFJ2YmJhV2tSTjVxNzdQTTZHWEEydDFjYmI0"
+            }
+          }
+        }
+      }
+    },
+    "features": {
+      "fetch_csrf": true
+    }
+  },
+  "lcap": true,
+  "sapux": [
+    "app/sesmassuploadapp"
+  ]
+}
