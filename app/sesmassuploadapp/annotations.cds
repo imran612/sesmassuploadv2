@@ -217,9 +217,6 @@ annotate service.SESMain with @(
     }
 );
 annotate service.SESMain with @(
-    UI.DeleteHidden : true
-);
-annotate service.SESMain with @(
     UI.HeaderInfo : {
         Title : {
             $Type : 'UI.DataField',

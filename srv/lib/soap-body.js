@@ -13,7 +13,7 @@
                     }
                 },
                 SERVICE_ENTRY_SHEET_ENTITY: {
-                    ACTION_CODE: '01',
+                    ACTION_CODE: '01', 
                     APPROVAL_STATUS: '10',
                     SERVICE_ENTRY_SHEET: "",
                     SERVICE_ENTRY_SHEET_NAME: 'TestNKSOAP_0301',
