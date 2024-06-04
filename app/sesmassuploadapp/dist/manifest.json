@@ -50,7 +50,8 @@
         "sap.m": {},
         "sap.ui.core": {},
         "sap.ushell": {},
-        "sap.fe.templates": {}
+        "sap.fe.templates": {},
+        "sap.f": {}
       }
     },
     "contentDensities": {
@@ -82,12 +83,28 @@
       "css": []
     },
     "routing": {
-      "config": {},
+      "config": {
+        "flexibleColumnLayout": {
+          "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
+          "defaultThreeColumnLayoutType": "ThreeColumnsMidExpanded"
+        },
+        "routerClass": "sap.f.routing.Router"
+      },
       "routes": [
         {
           "pattern": "SESMainHeader({key}):?query:",
           "name": "SESMainHeaderObjectPage",
-          "target": "SESMainHeaderObjectPage"
+          "target": [
+            "SESMainHeaderObjectPage"
+          ]
+        },
+        {
+          "pattern": "SESMainHeader({key})/main({key2}):?query:",
+          "name": "SESMainHeader_mainObjectPage",
+          "target": [
+            "SESMainHeaderObjectPage",
+            "SESMainHeader_mainObjectPage"
+          ]
         }
       ],
       "targets": {
@@ -104,11 +121,39 @@
                   "visible": false,
                   "anchorBarVisible": false
                 }
+              },
+              "navigation": {
+                "main": {
+                  "detail": {
+                    "route": "SESMainHeader_mainObjectPage"
+                  }
+                }
               }
             }
-          }
+          },
+          "controlAggregation": "beginColumnPages",
+          "contextPattern": "/SESMainHeader({key})"
+        },
+        "SESMainHeader_mainObjectPage": {
+          "type": "Component",
+          "id": "SESMainHeader_mainObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "contextPath": "/SESMainHeader/main",
+              "navigation": {}
+            }
+          },
+          "controlAggregation": "midColumnPages",
+          "contextPattern": "/SESMainHeader({key})/main({key2})"
         }
       }
+    },
+    "rootView": {
+      "viewName": "sap.fe.templates.RootContainer.view.Fcl",
+      "type": "XML",
+      "async": true,
+      "id": "appRootView"
     }
   },
   "sap.fiori": {

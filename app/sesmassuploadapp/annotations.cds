@@ -195,10 +195,18 @@ annotate service.SESMain with @(
             $Type : 'UI.ReferenceFacet',
             Label : 'Notes',
             ID : 'Notes',
-            Target : '@UI.FieldGroup#Notes',
-        },
-    ],
+            Target : '@UI.FieldGroup#Notes1',
+        },],
     UI.FieldGroup #Notes : {
+        $Type : 'UI.FieldGroupType',
+        Data : [],
+    }
+);
+annotate service.SESMain with {
+    plainLongText @UI.MultiLineText : true
+};
+annotate service.SESMain with @(
+    UI.FieldGroup #Notes1 : {
         $Type : 'UI.FieldGroupType',
         Data : [
             {
@@ -208,6 +216,16 @@ annotate service.SESMain with @(
             },],
     }
 );
-annotate service.SESMain with {
-    plainLongText @UI.MultiLineText : true
-};
+annotate service.SESMain with @(
+    UI.DeleteHidden : true
+);
+annotate service.SESMain with @(
+    UI.HeaderInfo : {
+        Title : {
+            $Type : 'UI.DataField',
+            Value : purchaseOrder_documentNumber,
+        },
+        TypeName : '',
+        TypeNamePlural : '',
+    }
+);
