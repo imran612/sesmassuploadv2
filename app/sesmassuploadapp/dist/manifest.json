@@ -24,6 +24,25 @@
           "odataVersion": "4.0"
         }
       }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "SESMassUpload-display": {
+          "semanticObject": "SESMassUpload",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      },
+      "outbounds": {
+        "SESMassOutbound-display": {
+          "semanticObject": "SESMassUpload",
+          "action": "display"
+        }
+      }
     }
   },
   "sap.ui": {
@@ -170,6 +189,15 @@
       "type": "XML",
       "async": true,
       "id": "appRootView"
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ObjectPage.ObjectPageController": {
+            "controllerName": "com.xom.mu.sesmassuploadapp.ext.controller.SESHeader"
+          }
+        }
+      }
     }
   },
   "sap.fiori": {

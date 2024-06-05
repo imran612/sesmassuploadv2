@@ -309,7 +309,7 @@ async function executePurchaseContractItem(req, purContractForOverallLimit) {
     } catch (err) {
         req.error(err.code, err.message);
     }
-    return contracts;
+    return contracts; 
 }
 
 async function executeCreateServiceEntry(data, req, attachments) {

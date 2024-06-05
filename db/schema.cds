@@ -34,7 +34,7 @@ entity SESMain : managed, cuid {
     contractNetPriceAmount: Decimal(12, 3) @Core.Computed;
     documentCurrency : String(5) @Core.Computed;
     plainLongText : LargeString;
-    //attachments: Composition of many Attachments;
+   // attachments: Composition of many Attachments;
     //sesMainDetails : Composition of many SESMainDetails on sesMainDetails.sESMain = $self;
 }
 

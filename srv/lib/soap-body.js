@@ -134,8 +134,8 @@ const purchaseOrders = [];
 const pos = data.main;
 for (let i = 0; i < pos.length; i++) {
     let filename, mimetype , attachcontent;
-    const contents = pos[i].attachments;
-    if(contents.length > 0) {
+    const contents = pos[i].attachments; 
+    if(contents && contents.length > 0) { 
         const key = { ID: contents[0].ID }
         const attachContents = await SELECT.from(attachments.drafts, key).columns("content");
         attachcontent = await _streamToString(attachContents.content);
