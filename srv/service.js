@@ -49,7 +49,7 @@ module.exports = class SESMassAppService extends cds.ApplicationService {
     this.after('CANCEL', 'EntrySheetItems', async (req, res)=> {  
         const abc = req;
     });
-    this.before(['CREATE'], ['SESMain.drafts'], readContractItemDetail);
+    this.before(['CREATE', 'UPDATE'], ['SESMain.drafts'], readContractItemDetail);
   /*  this.before('NEW', "SESAppService_SESPurchaseOrders_attachments_drafts", async req => {
         req.data.url = cds.utils.uuid();
         req.data.ID = cds.utils.uuid();

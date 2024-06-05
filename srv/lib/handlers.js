@@ -159,7 +159,7 @@ async function readContractItemDetail(req) {
         if(req.data != undefined && req.data.contractItem_PurchaseContractItem && req.data.purchaseOrder_documentNumber && req.data.purchaseOrderItem_PurchaseOrderItem) {
             const query_po = SELECT.from('A_PurchaseOrderItem').where({PurchaseOrder: { '=': req.data.purchaseOrder_documentNumber}, and: {PurchaseOrderItem: { '=': req.data.purchaseOrderItem_PurchaseOrderItem}}});
             const contracts =  await s4pos.run(query_po);
-            if (contracts) {
+            if (contracts) { 
                 for (var i = 0; i < contracts.length; i++) {
                     const pc = contracts[i].PurchaseContract!=''?contracts[i].PurchaseContract:contracts[i].PurContractForOverallLimit;
                     if(contracts.length == 1) {
@@ -169,27 +169,34 @@ async function readContractItemDetail(req) {
                             for (var i = 0; i < contractDetails.length; i++) {
                                 req.data.documentCurrency = contractDetails[i].DocumentCurrency;
                                 req.data.contractNetPriceAmount = contractDetails[i].ContractNetPriceAmount;
-                                req.data.orderPriceUnit =contractDetails[i].OrderPriceUnit; 
+                                req.data.orderPriceUnit =contractDetails[i].OrderPriceUnit;
                             }
                         }
-                    }
-                } 
+                    } 
+               }
             }
-
-            /*const po_item =  await SELECT.one.from(req.subject).columns('item_PurchaseOrderItem');
-            req.data.item_PurchaseOrderItem = po_item.item_PurchaseOrderItem;*/
+            if(req.data != undefined && req.data.qty ) {  
+                req.data.netPrice = req.data.qty * req.data.contractNetPriceAmount;
+            }
+        } else {
+            if(req.data != undefined && req.data.purchaseContract && req.data.contractItem_PurchaseContractItem) 
+            {
+                const query = SELECT.from('A_PurchaseContractItem').where({PurchaseContract: { '=': req.data.purchaseContract}, and: {PurchaseContractItem: { '=': req.data.contractItem_PurchaseContractItem}}});
+                const contractDetails =  await s4poc.run(query);
+                if (contractDetails) {
+                    for (var i = 0; i < contractDetails.length; i++) {
+                        req.data.documentCurrency = contractDetails[i].DocumentCurrency;
+                        req.data.contractNetPriceAmount = contractDetails[i].ContractNetPriceAmount;
+                        req.data.orderPriceUnit =contractDetails[i].OrderPriceUnit; 
+                        }
+                }
+            }
+            if(req.data != undefined && req.data.qty ) { 
+                const item =  await SELECT.one.from(req.subject).columns('contractNetPriceAmount');
+                req.data.netPrice = req.data.qty * item.contractNetPriceAmount;
+               } 
         }
-        if(req.data != undefined && req.data.qty && req.data.contractNetPriceAmount) {
-           // const item =  await SELECT.one.from(req.subject).columns('contractNetPriceAmount');
-            req.data.netPrice = req.data.qty * req.data.contractNetPriceAmount;
-           } 
-      /*  let query = SELECT.from('A_PurchaseOrderItem').where({PurchaseOrder: { '=': '4500020970'}, and: {PurchaseOrderItem: { '=': '20'}}});
-        contracts =  await s4pos.run(query);
-        if (contracts) {
-            for (var i = 0; i < contracts.length; i++) {
-                contracts =  await executePurchaseContractItem(req, contracts[i].PurContractForOverallLimit);
-            }
-        } */
+
     } catch (err) {
         req.error(err.code, err.message);
     }
@@ -244,7 +251,7 @@ async function readS4POItems(req) {
         let query = SELECT.from('A_PurchaseOrderItem').where({PurchaseOrder:purchaseOrder});
         s4POItems =  await s4pos.run(query);
     } catch (err) {
-        req.error(err.code, err.message);
+        req.error(err.code, err.message); 
     }
     s4POItems.$count = s4POItems.length;
    return s4POItems;
@@ -328,7 +335,7 @@ async function executeCreateServiceEntry(data, req, attachments) {
         const resultItems = res[0].ET_RETURN.item;
         for (var i =0; i < resultItems.length; i++) {
             if(resultItems[i].MESSAGE.item[0].TYPE == "E") { 
-                req.error({
+                req.info({
                     message: resultItems[i].MESSAGE.item[0].MESSAGE + " for purchase order "+resultItems[i].PURCHASE_ORDER
                   });
             } else {
@@ -342,7 +349,7 @@ async function executeCreateServiceEntry(data, req, attachments) {
         //const msg = res[0].ET_BAPIRETTAB.item[0].MESSAGE; 
         //if ses created, delete items from the table
        /* if(checkSesNumber(msg)) {
-            //await executeDeleteSESItems(req, data);
+            //await executeDeleteSESItems(req, data); 
             req.info(msg);
         } else {
             req.info(msg);
