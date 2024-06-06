@@ -1,2 +1,0 @@
-sap.ui.require(["sap/fe/test/JourneyRunner","com/xom/mu/sesmassuploadapp/test/integration/FirstJourney","com/xom/mu/sesmassuploadapp/test/integration/pages/SESMainHeaderObjectPage"],function(e,a,s){"use strict";var e=new e({launchUrl:sap.ui.require.toUrl("com/xom/mu/sesmassuploadapp")+"/index.html"});e.run({pages:{onTheSESMainHeaderObjectPage:s}},a.run)});
-//# sourceMappingURL=opaTests.qunit.js.map

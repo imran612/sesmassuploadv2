@@ -21,7 +21,7 @@
                 class="customCellImageBackground">
                 <VBox>
                     <Text text="1.0.0" />
-                    <Link class="titleLink" text="View Log" target="_blank" href="https://logs.cf.us10.hana.ondemand.com/app/dashboards#/view/Overview?_g=(filters:!((query:(match_phrase:(component_name:sesmassuploadapp-srv)))))" visible="true" />
+                    <Link class="titleLink" text="View Log" target="_blank" href="" visible="true" />
                 </VBox>
             </l:BlockLayoutCell>
         </l:BlockLayoutRow>

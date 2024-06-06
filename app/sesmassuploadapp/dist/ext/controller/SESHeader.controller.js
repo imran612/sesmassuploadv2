@@ -1,2 +1,0 @@
-sap.ui.define(["sap/ui/core/mvc/ControllerExtension"],function(e){"use strict";return e.extend("com.xom.mu.sesmassuploadapp.ext.controller.SESHeader",{override:{onInit:function(){var e=this.base.getExtensionAPI().getModel()},editFlow:{onAfterSave:function(e){this.base.intentBasedNavigation.navigateOutbound("SESMassOutbound-display",{})}}}})});
-//# sourceMappingURL=SESHeader.controller.js.map

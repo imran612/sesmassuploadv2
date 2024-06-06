@@ -24,7 +24,7 @@
     "@cap-js/sqlite": "^1",
     "@sap/dev-cap-tools": "^1.31.0",
     "@sap/eslint-plugin-cds": "^3",
-    "@sap/ux-specification": "^1.120.11",
+    "@sap/ux-specification": "^1.108.30",
     "eslint": "^9"
   },
   "scripts": {
@@ -32,7 +32,7 @@
     "start-local": "npm run generate-entry-point && npm run cds-watch",
     "generate-entry-point": "dev-cap-tools gen-entrypoint",
     "cds-watch": "cds watch --open",
-    "watch-sesmassuploadapp": "cds watch --open sesmassuploadapp/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-sesmassuploadapp.sesappwithexcel": "cds watch --open sesmassuploadapp.sesappwithexcel/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "requires": {
@@ -186,6 +186,6 @@
   },
   "lcap": true,
   "sapux": [
-    "app/sesmassuploadapp"
+    "app/sesmassuploadapp.sesappwithexcel"
   ]
 }

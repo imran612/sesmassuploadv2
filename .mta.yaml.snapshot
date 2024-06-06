@@ -26,9 +26,9 @@ build-parameters:
       commands:
         - npm install
 modules:
-  - name: sesmassuploadapp-com.xom.mu.sesmassuploadapp
+  - name: sesmassuploadapp-sesmassuploadapp.sesappwithexcel
     type: html5
-    path: app/sesmassuploadapp
+    path: app/sesmassuploadapp.sesappwithexcel
     build-parameters:
       builder: custom
       commands:
@@ -39,8 +39,8 @@ modules:
         - mkdir dist-zip
         - >-
           bash -c "cd dist && npx bestzip
-          ../dist-zip/comxommusesmassuploadapp.zip *"
-      _artifactName: comxommusesmassuploadapp.zip
+          ../dist-zip/sesmassuploadappsesappwithexcel.zip *"
+      _artifactName: sesmassuploadappsesappwithexcel.zip
       supported-platforms: []
       build-result: dist-zip
   - name: sesmassuploadapp-db-deployer
@@ -148,9 +148,9 @@ modules:
     build-parameters:
       build-result: resources
       requires:
-        - name: sesmassuploadapp-com.xom.mu.sesmassuploadapp
+        - name: sesmassuploadapp-sesmassuploadapp.sesappwithexcel
           artifacts:
-            - comxommusesmassuploadapp.zip
+            - sesmassuploadappsesappwithexcel.zip
           target-path: resources
         - name: sesmassuploadapp-launchpad
           artifacts:

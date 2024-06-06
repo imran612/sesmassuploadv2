@@ -14,6 +14,7 @@ using {
 //using { Attachments } from '@cap-js/attachments';
 entity SESMainHeader : managed, cuid {
     //purchaseOrder : Association to one SESPurchaseOrders;
+    entrySheetName : String(100) @title: '{i18n>entrySheetName}' @Core.Immutable @mandatory;
     main : Composition of many SESMain on main.sesMainHeader = $self; 
 }
 

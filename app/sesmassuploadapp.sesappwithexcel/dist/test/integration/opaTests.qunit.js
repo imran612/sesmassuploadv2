@@ -1,0 +1,2 @@
+sap.ui.require(["sap/fe/test/JourneyRunner","sesmassuploadapp/sesappwithexcel/test/integration/FirstJourney","sesmassuploadapp/sesappwithexcel/test/integration/pages/SESMainHeaderList","sesmassuploadapp/sesappwithexcel/test/integration/pages/SESMainHeaderObjectPage"],function(e,s,a,t){"use strict";var e=new e({launchUrl:sap.ui.require.toUrl("sesmassuploadapp/sesappwithexcel")+"/index.html"});e.run({pages:{onTheSESMainHeaderList:a,onTheSESMainHeaderObjectPage:t}},s.run)});
+//# sourceMappingURL=opaTests.qunit.js.map

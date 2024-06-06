@@ -1,2 +1,2 @@
 
-using from './sesmassuploadapp/annotations';
+using from './sesmassuploadapp.sesappwithexcel/annotations';

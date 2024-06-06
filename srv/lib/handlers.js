@@ -372,7 +372,7 @@ function checkSesNumber(msg) {
     const values = data.main;
     for (var i =0; i < values.length; i++) {
         if(values[i].purchaseOrder_documentNumber === deletePO) {
-            const deleteQuery = DELETE.from(namespace +'SESMainHeader').where({ ID: values[i].ID });
+            const deleteQuery = DELETE.from(req.subject).where({ ID: values[i].ID });
             await cds.tx(req).run(deleteQuery);
         }
     }

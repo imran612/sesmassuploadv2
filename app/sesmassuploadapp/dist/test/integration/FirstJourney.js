@@ -1,2 +1,0 @@
-sap.ui.define(["sap/ui/test/opaQunit"],function(n){"use strict";var t={run:function(){QUnit.module("First journey");n("Start application",function(n,t,i){n.iStartMyApp()});n("Teardown",function(n,t,i){n.iTearDownMyApp()})}};return t});
-//# sourceMappingURL=FirstJourney.js.map
