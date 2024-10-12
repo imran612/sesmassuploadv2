@@ -193,11 +193,19 @@ async function readContractItemDetail(req) {
             }
             if(req.data != undefined && req.data.qty ) { 
                 const item =  await SELECT.one.from(req.subject).columns('contractNetPriceAmount');
-                req.data.netPrice = req.data.qty * item.contractNetPriceAmount;
+                if(item.contractNetPriceAmount)
+                    req.data.netPrice = req.data.qty * item.contractNetPriceAmount;
                } 
+               
+               if(req.data != undefined && req.data.contractNetPriceAmount) { 
+                const item =  await SELECT.one.from(req.subject).columns('qty');
+                if(item.qty)
+                    req.data.netPrice = req.data.contractNetPriceAmount * item.qty;
+               }
+
         }
 
-    } catch (err) {
+    } catch (err) { 
         req.error(err.code, err.message);
     }
 }
@@ -224,11 +232,18 @@ async function executePurchaseOrders(req, token) {
     LOG.info("Inside SESAPP executePurchaseOrders()");
     LOG.info("SESAPP SAML Attributes "+ JSON.stringify(req.user.attr));
     let purchaseOrderResponse;
+    let path;
     try {
         const filterQuery = executeNetworkFilters(req);
-        const path = "orders?$top=100&$filter="+filterQuery;
-        //const path = "orders?$top=100&$filter="+filterQuery;
+        if(filterQuery)
+            path = "orders?$top=100&$filter="+filterQuery;
+        else
+        path = "orders?$top=100";
+        //const path = "orders?$top=100&$filter="+filterQuery; //4500020970
         //const path = "orders?realm=ExxonMobil-T&$top=1000";
+       // const path = "orders?$filter=startDate eq '2024-05-02T00:00:00' and endDate eq '2024-06-01T23:59:59' and documentNumber eq '4500021692'";
+        //const path = "orders?$filter=startDate eq '2024-09-02T00:00:00' and endDate eq '2024-09-30T23:59:59' and documentNumber eq '4500021694'";
+        //const path = "orders";
         LOG.info("SESAPP SBN Purchase Order Query Path "+ path);
         const tx = aribapo.transaction(req);
         purchaseOrderResponse = await tx.send({
@@ -324,7 +339,7 @@ async function executeCreateServiceEntry(data, req, attachments) {
     //const query = SELECT.from('SESAppService.SESPurchaseOrders.attachments.drafts').where({UP__DOCUMENTNUMBER: { '=': data.documentNumber}, and: {ID: { '=': data.attachments[0].ID}}});
    // const query = await SELECT.from(attachments.drafts, {ID: data.attachments[0].ID}).columns("content");
   //  const response = await cds.tx(req).run(query);
-    let soapEndpoint = { url: null };
+    let soapEndpoint = { url: null }; 
     let sesSoapService = await getSoapService('ZMASSSESREQUEST', './srv/external/ZMASSESREQUEST_IN.wsdl', soapEndpoint);
     sesSoapService.setEndpoint(soapEndpoint.url);
     const soapEnvelop = await prepareSoapPayload(data, attachments);
@@ -335,15 +350,20 @@ async function executeCreateServiceEntry(data, req, attachments) {
         const resultItems = res[0].ET_RETURN.item;
         for (var i =0; i < resultItems.length; i++) {
             if(resultItems[i].MESSAGE.item[0].TYPE == "E") { 
+                LOG.error(resultItems[i].MESSAGE.item[0].MESSAGE);
                 req.info({
                     message: resultItems[i].MESSAGE.item[0].MESSAGE + " for purchase order "+resultItems[i].PURCHASE_ORDER
                   });
             } else {
+                LOG.error("SES CREATED "+ resultItems[i].MESSAGE.item[0].MESSAGE);
                 //delete the successfull entries from HDB
                 await executeDeleteSESItems(req, data,resultItems[i].PURCHASE_ORDER);
                 req.info({
                     message: resultItems[i].MESSAGE.item[0].MESSAGE+" for purchase order "+resultItems[i].PURCHASE_ORDER
                   });
+                  /*req.notify({
+                    message: resultItems[i].MESSAGE.item[0].MESSAGE+" for purchase order "+resultItems[i].PURCHASE_ORDER
+                  });*/
             } 
         }
         //const msg = res[0].ET_BAPIRETTAB.item[0].MESSAGE; 
@@ -391,7 +411,7 @@ function getPoSearchDateFIlter(req) {
         }
     }
 }
-function executeNetworkFilters(req) {
+function executeNetworkFilters(req) { 
     const whereStatement = req.query.SELECT.where;
     let filterQuery;
     if (whereStatement){
@@ -433,7 +453,7 @@ function executeNetworkFilters(req) {
                         filterQuery = "orderStatus eq '"+orderStatus.substring(3)+"'";
                     }
                 } 
-            }
+            } 
         }
     }
    // LOG.error("SESAPP SAML attributes"+ JSON.stringify(req.user.attr));
@@ -448,11 +468,11 @@ function executeNetworkFilters(req) {
     } else {
         LOG.error("SESAPP SupplierANID Not Found in SAML attributes"+ JSON.stringify(req.user.attr));
         //if ANID not found in the SAML trace then return the []
-        if(filterQuery) {
+      /*  if(filterQuery) {
             filterQuery += " and supplierANID eq 'AN01504352497-T'";
         } else {
             filterQuery = "supplierANID eq 'AN01504352497-T'";
-        }
+        } */
     }
        // path = "orders?$top=100&$filter=supplierANID eq 'AN01504352497-T'";
         //return;
@@ -465,7 +485,7 @@ function executeNetworkFilters(req) {
         filterQuery = "startDate eq '"+defaultDR.startDate+"T00:00:00'";
         filterQuery += "endDate eq '"+defaultDR.endDate+"T23:59:59'";
     } */
-    return filterQuery;
+    return filterQuery; 
 }
 // Utility method to get start and end dates
 function getStartEndDate() {
@@ -480,7 +500,7 @@ function getStartEndDate() {
     const endDate = formatDate(oneMonthAgo);
 
     return { startDate, endDate };
-}
+}  
 
 // Helper function to format date as YYYY-MM-DD
 function formatDate(date) {

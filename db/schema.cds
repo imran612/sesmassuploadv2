@@ -7,11 +7,10 @@ using {
     User ,
     sap.common.CodeList,
     cuid ,
-    extensible ,
     managed ,
     temporal
 } from '@sap/cds/common';
-//using { Attachments } from '@cap-js/attachments';
+using { Attachments } from '@cap-js/attachments';
 entity SESMainHeader : managed, cuid {
     //purchaseOrder : Association to one SESPurchaseOrders;
     main : Composition of many SESMain on main.sesMainHeader = $self; 
@@ -24,17 +23,20 @@ entity SESMain : managed, cuid {
     postingDate : Date @mandatory; 
     periodStart : Date @title: '{i18n>periodStart}' @mandatory;
     periodEnd : Date @mandatory;
-    contractItem : Association to one ContractItems @mandatory @Common.Text: contractItem.PurchaseContract;
+    contractItem : Association to one ContractItems @Common.Text: contractItem.PurchaseContract;
     purchaseContract: String(10);
     purchaseContractItemText : String(40);
     qty : Integer @mandatory;
     assignCategory : Association to one AssignCategory;
     netPrice : Decimal(12, 3) @Core.Computed;
-    orderPriceUnit : String(3) @Core.Computed;
-    contractNetPriceAmount: Decimal(12, 3) @Core.Computed;
-    documentCurrency : String(5) @Core.Computed;
+    //orderPriceUnit : String(3) @Core.Computed;
+    orderPriceUnit : String(3);
+    contractNetPriceAmount:Integer;
+    //contractNetPriceAmount: Decimal(12, 3) @Core.Computed;
+    //documentCurrency : String(5) @Core.Computed; 
+    documentCurrency : String(5);
     plainLongText : LargeString;
-   // attachments: Composition of many Attachments;
+    attachments: Composition of many Attachments;
     //sesMainDetails : Composition of many SESMainDetails on sesMainDetails.sESMain = $self;
 }
 

@@ -14,7 +14,7 @@ sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExten
 				var oModel = this.base.getExtensionAPI().getModel();
 			},
 			editFlow: {
-				onAfterSave: function (mParameters) {
+				onAfterSave: function (mParameters) { 
 					/*mParameters.context.refresh();
 					//asynchronous access to complete data the context points to
 					mParameters.context.requestObject().then((contextData) => {

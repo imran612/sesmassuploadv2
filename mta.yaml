@@ -33,6 +33,7 @@ modules:
       builder: custom
       commands:
         - rm -rf dist-zip dist
+        - npm install
         - >-
           npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
           --include-task=generateCachebusterInfo

@@ -132,20 +132,26 @@ function getNotes(data) {
 async function getMassPOs(data, attachments) {
 const purchaseOrders = [];
 const pos = data.main;
+let priceUnit;
 for (let i = 0; i < pos.length; i++) {
     let filename, mimetype , attachcontent;
-    const contents = pos[i].attachments; 
+    const contents = pos[i].attachments;
     if(contents && contents.length > 0) { 
         const key = { ID: contents[0].ID }
         const attachContents = await SELECT.from(attachments.drafts, key).columns("content");
         attachcontent = await _streamToString(attachContents.content);
-        filename = contents[i].filename;
-        mimetype = contents[i].mimeType;
+        filename = contents[0].filename;
+        mimetype = contents[0].mimeType;
+    }
+    if(pos[i].orderPriceUnit == 'H'){
+        priceUnit = 'HUR';
+    } else {
+        priceUnit = pos[i].orderPriceUnit;
     }
     purchaseOrders.push({
       SENDER_BUSINESS_SYSTEM_ID: 'AN01053225455-T',
       RECIPIENT_BUSINESS_SYSTEM_ID: 'L5SCLNT100',
-      APPROVAL_STATUS: 10,
+      APPROVAL_STATUS: 20,
       SERVICE_ENTRY_SHEET_NAME: 'TESTSES',
       PURCHASE_ORDER: pos[i].purchaseOrder_documentNumber,
       POSTING_DATE: pos[i].postingDate+'T00:00:00.000Z',
@@ -153,14 +159,14 @@ for (let i = 0; i < pos.length; i++) {
       SERVICE_ENTRY_SHEET_ITEM_DESC: 'TEST SES DESC',
       SERVICE_PERFORMANCE_DATE: pos[i].periodStart+'T00:00:00.000Z',
       SERVICE_PERFORMANCE_END_DATE: pos[i].periodEnd+'T00:00:00.000Z',
-      PURCHASE_CONTRACT_ITEM: pos[i].contractItem_PurchaseContractItem,
+      PURCHASE_CONTRACT_ITEM: pos[i].contractItem_PurchaseContractItem,  
       CONFIRMED_QUANTITY: {
-        UNIT_CODE: 'HUR',//sesItem[i].orderPriceUnit, //AJ TO FIND THE ODATA SERVICE
+        UNIT_CODE: priceUnit,//HUR sesItem[i].orderPriceUnit, //AJ TO FIND THE ODATA SERVICE
         CONTENT:  pos[i].qty
       },
       NET_PRICE_AMOUNT: {
         CURRENCY_CODE:  pos[i].documentCurrency,
-        CONTENT:  pos[i].netPrice
+        CONTENT:  pos[i].netPrice 
       },
       SERVICE_PERFORMER: 'EMPLOYEE',
       TEXT: {
@@ -169,9 +175,13 @@ for (let i = 0; i < pos.length; i++) {
         CONTENT: pos[i].plainLongText
       },
       ATTACHMENT: {
+       /* FILE_NAME: filename,
+        MIME_TYPE: mimetype,
+        CONTENT: attachcontent*/
         FILE_NAME: filename ? filename: 'TEST.PDF',
         MIME_TYPE: mimetype ? mimetype : 'PDF',
         CONTENT: attachcontent ? attachcontent : 'DQplbmRvYmoNCg0KMzAgMCBvYmoNCls0IDAgUiA0IDAgUiA1IDAgUiA1IDAgUgo2IDAgUiA3IDAgUiA4IDAgUiA5IDAgUgoxMCAwIFIgMTAgMCBSIDEwIDAgUiAxMSAwIFIKMTIgMCBSIDEzIDAgUiAxNCAwIFIgMTQgMCBSCjE0IDAgUiAxNSAwIFIgMTYgMCBSIDE2IDAgUgoxNiAwIFIgMTcgMCBSIDE4IDAgUiAxOCAwIFIKMTkgMCBSIDIwIDAgUiAyMSAwIFIgMjEgMCBSCjIxIDAgUiAyMSAwIFIgMjEgMCBSIDIyIDAgUgoyMiAwIFIgMjIgMCBSIDIzIDAgUiAyNCAwIFIKMjUgMCBSIDI1IDAgUiAyNiAwIFIgMjcgMCBSCjI4IDAgUl0NCmVuZG9iag0KDQozMSAwIG9iag0KPDwKL1Byb2R1Y2VyIChVbml0ZWQgQWlybGluZXMgdmlhIEFCQ3BkZikKPj4NCmVuZG9iag0KDQp4cmVmDQowIDMyDQowMDAwMDAwMDAwIDY1NTM1IGYNCjAwMDAxNjY5MjMgMDAwMDAgbg0KMDAwMDE2Njk2NSAwMDAwMCBuDQowMDAwMTY3MDI4IDAwMDAwIG4NCjAwMDAxNjcyOTAgMDAwMDAgbg0KMDAwMDE2NzM2OSAwMDAwMCBuDQowMDAwMTY3NDQ4IDAwMDAwIG4NCjAwMDAxNjc1MjUgMDAwMDAgbg0KMDAwMDE2NzYwMiAwMDAwMCBuDQowMDAwMTY3Njc5IDAwMDAwIG4NCjAwMDAxNjc3NTYgMDAwMDAgbg0KMDAwMDE2NzgzOSAwMDAwMCBuDQowMDAwMTY3OTE4IDAwMDAwIG4NCjAwMDAxNjc5OTcgMDAwMDAgbg0KMDAwMDE2ODA3NiAwMDAwMCBuDQowMDAwMTY4MTYxIDAwMDAwIG4NCjAwMDAxNjgyNDAgMDAwMDAgbg0KMDAwMDE2ODMyNSAwMDAwMCBuDQowMDAwMTY4NDA0IDAwMDAwIG4NCjAwMDAxNjg0ODYgMDAwMDAgbg0KMDAwMDE2ODU2NSAwMDAwMCBuDQowMDAwMTY4NjQ0IDAwMDAwIG4NCjAwMDAxNjg3MzUgMDAwMDAgbg0KMDAwMDE2ODgyMCAwMDAwMCBuDQowMDAwMTY4ODk5IDAwMDAwIG4NCjAwMDAxNjg5NzggMDAwMDAgbg0KMDAwMDE2OTA2MCAwMDAwMCBuDQowMDAwMTY5MTM5IDAwMDAwIG4NCjAwMDAxNjkyMTggMDAwMDAgbg0KMDAwMDE2OTI5NyAwMDAwMCBuDQowMDAwMTY5MzQxIDAwMDAwIG4NCjAwMDAxNjk2NDMgMDAwMDAgbg0KdHJhaWxlcg0KPDwKL1NpemUgMzIKPj4NCnN0YXJ0eHJlZg0KMTg5DQolJUVPRg0K'
+    
         //FILE_SIZE: '000000170409',
         //CONTENT: 'DQplbmRvYmoNCg0KMzAgMCBvYmoNCls0IDAgUiA0IDAgUiA1IDAgUiA1IDAgUgo2IDAgUiA3IDAgUiA4IDAgUiA5IDAgUgoxMCAwIFIgMTAgMCBSIDEwIDAgUiAxMSAwIFIKMTIgMCBSIDEzIDAgUiAxNCAwIFIgMTQgMCBSCjE0IDAgUiAxNSAwIFIgMTYgMCBSIDE2IDAgUgoxNiAwIFIgMTcgMCBSIDE4IDAgUiAxOCAwIFIKMTkgMCBSIDIwIDAgUiAyMSAwIFIgMjEgMCBSCjIxIDAgUiAyMSAwIFIgMjEgMCBSIDIyIDAgUgoyMiAwIFIgMjIgMCBSIDIzIDAgUiAyNCAwIFIKMjUgMCBSIDI1IDAgUiAyNiAwIFIgMjcgMCBSCjI4IDAgUl0NCmVuZG9iag0KDQozMSAwIG9iag0KPDwKL1Byb2R1Y2VyIChVbml0ZWQgQWlybGluZXMgdmlhIEFCQ3BkZikKPj4NCmVuZG9iag0KDQp4cmVmDQowIDMyDQowMDAwMDAwMDAwIDY1NTM1IGYNCjAwMDAxNjY5MjMgMDAwMDAgbg0KMDAwMDE2Njk2NSAwMDAwMCBuDQowMDAwMTY3MDI4IDAwMDAwIG4NCjAwMDAxNjcyOTAgMDAwMDAgbg0KMDAwMDE2NzM2OSAwMDAwMCBuDQowMDAwMTY3NDQ4IDAwMDAwIG4NCjAwMDAxNjc1MjUgMDAwMDAgbg0KMDAwMDE2NzYwMiAwMDAwMCBuDQowMDAwMTY3Njc5IDAwMDAwIG4NCjAwMDAxNjc3NTYgMDAwMDAgbg0KMDAwMDE2NzgzOSAwMDAwMCBuDQowMDAwMTY3OTE4IDAwMDAwIG4NCjAwMDAxNjc5OTcgMDAwMDAgbg0KMDAwMDE2ODA3NiAwMDAwMCBuDQowMDAwMTY4MTYxIDAwMDAwIG4NCjAwMDAxNjgyNDAgMDAwMDAgbg0KMDAwMDE2ODMyNSAwMDAwMCBuDQowMDAwMTY4NDA0IDAwMDAwIG4NCjAwMDAxNjg0ODYgMDAwMDAgbg0KMDAwMDE2ODU2NSAwMDAwMCBuDQowMDAwMTY4NjQ0IDAwMDAwIG4NCjAwMDAxNjg3MzUgMDAwMDAgbg0KMDAwMDE2ODgyMCAwMDAwMCBuDQowMDAwMTY4ODk5IDAwMDAwIG4NCjAwMDAxNjg5NzggMDAwMDAgbg0KMDAwMDE2OTA2MCAwMDAwMCBuDQowMDAwMTY5MTM5IDAwMDAwIG4NCjAwMDAxNjkyMTggMDAwMDAgbg0KMDAwMDE2OTI5NyAwMDAwMCBuDQowMDAwMTY5MzQxIDAwMDAwIG4NCjAwMDAxNjk2NDMgMDAwMDAgbg0KdHJhaWxlcg0KPDwKL1NpemUgMzIKPj4NCnN0YXJ0eHJlZg0KMTg5DQolJUVPRg0K'
       }

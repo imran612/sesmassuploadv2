@@ -89,10 +89,10 @@ annotate service.SESMain with {
                 $Type : 'Common.ValueListParameterDisplayOnly',
                 ValueListProperty : 'supplierName',
             },
-            {
+         /*   {
                 $Type : 'Common.ValueListParameterDisplayOnly',
                 ValueListProperty : 'dashboardStatus',
-            },
+            },*/
             {
                 $Type : 'Common.ValueListParameterDisplayOnly',
                 ValueListProperty : 'customerName',
@@ -185,7 +185,7 @@ annotate service.SESMain @(Common.SideEffects #populateItems: {
     TargetProperties: ['purchaseContractItemText', 'orderPriceUnit', 'contractNetPriceAmount', 'documentCurrency']
 });
 annotate service.SESMain @(Common.SideEffects #totalNetPrice: {
-    SourceProperties  : [qty],
+    SourceProperties  : [qty, contractNetPriceAmount],
     TargetProperties: ['netPrice']
 });
 
